@@ -1,15 +1,21 @@
+#ifndef HASHMAP_IMPLEMENTATION
+#define HASHMAP_IMPLEMENTATION
+
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
-#include <math.h>
 
+#ifndef HASHMAP_SIZE
 #define HASHMAP_SIZE 69 
+#endif
+#ifndef HASH_PRIME_NUMBER
 #define HASH_PRIME_NUMBER 2
+#endif
 
 #define PRINT_MAP(map, printing_type, type) \
             for(size_t i = 0; i < HASHMAP_SIZE; i++){ \
-                Node *node = map->hashmap[i]; \
+                Hashmap_Node *node = map->hashmap[i]; \
                 if(node == NULL) { \
                     continue; \
                 } \
@@ -20,19 +26,23 @@
                 printf("NULL\n"); \
             } \
 
-typedef struct Node{
+double hashmap_my_fmod(float num1, float num2){
+    return num1 - (int)(num1 / num2) * num2;
+}
+
+typedef struct Hashmap_Node{
     char *key;
     void *value;
-    struct Node *next;
-} Node;
+    struct Hashmap_Node *next;
+} Hashmap_Node;
 
 typedef struct {
-    Node *hashmap[HASHMAP_SIZE];
+    Hashmap_Node *hashmap[HASHMAP_SIZE];
     char *key;
 } Map;
 
 
-size_t mul_hash(char *key){
+size_t hashmap_mul_hash(char *key){
     size_t hash = 0; 
     float C = 1.618033988;
 
@@ -40,10 +50,10 @@ size_t mul_hash(char *key){
         hash += (int)key[i];
     }
 
-    return floor(HASHMAP_SIZE * fmod(hash * C, 1));
+    return (int)(HASHMAP_SIZE * hashmap_my_fmod(hash * C, 1.0));
 }
 
-size_t mod_hash(char *key){
+size_t hashmap_mod_hash(char *key){
     size_t hash = 0;
     for(size_t i = 0; i < strlen(key); i++){
         hash += (int)key[i];
@@ -51,7 +61,7 @@ size_t mod_hash(char *key){
     return hash % HASHMAP_SIZE;
 }
 
-size_t knuth_hash(char *key) {
+size_t hashmap_knuth_hash(char *key) {
     size_t hash = 0;
     for(size_t i = 0; i < strlen(key); i++){
         hash += (int)key[i];
@@ -59,7 +69,7 @@ size_t knuth_hash(char *key) {
     return hash * (hash + 3) % HASHMAP_SIZE;
 }
 
-size_t hash(char *key) {
+size_t hashmap_hash(char *key) {
     size_t hash = HASH_PRIME_NUMBER;
     for(size_t i = 0; i < strlen(key); i++){
         hash = hash * 31 + (int)key[i];
@@ -75,15 +85,15 @@ void init_map(Map *map){
 
 
 int put_in_map(Map *map, char *key, void *value){
-    size_t index = hash(key); 
-    Node *tmp = map->hashmap[index];
-    Node *current = malloc(sizeof(Node));
+    size_t index = hashmap_hash(key); 
+    Hashmap_Node *tmp = map->hashmap[index];
+    Hashmap_Node *current = malloc(sizeof(Hashmap_Node));
     current->value = value;
     current->key = malloc(sizeof(char) * strlen(key));
     strcpy(current->key, key);
     current->next = NULL;
     if(tmp != NULL) {
-        Node *tmp = map->hashmap[index];
+        Hashmap_Node *tmp = map->hashmap[index];
         while(tmp->next != NULL) {
            tmp = tmp->next; 
         }
@@ -95,14 +105,14 @@ int put_in_map(Map *map, char *key, void *value){
 }
 
 void *get_from_map(Map *map, char *key) {
-    size_t index = hash(key);
+    size_t index = hashmap_hash(key);
     if(map->hashmap[index] == NULL) {
         return NULL;
     }
     if(strcmp(map->hashmap[index]->key, key) == 0){
         return map->hashmap[index]->value;
     } else {
-        Node *current = map->hashmap[index];
+        Hashmap_Node *current = map->hashmap[index];
         while(strcmp(current->key, key) != 0){
             if(current->next == NULL) {
                 return NULL;
@@ -114,13 +124,13 @@ void *get_from_map(Map *map, char *key) {
 }
 
 int remove_from_map(Map *map, char *key) {
-    size_t index = hash(key);
-    Node *current = map->hashmap[index];
+    size_t index = hashmap_hash(key);
+    Hashmap_Node *current = map->hashmap[index];
     if(current == NULL) {
         return 1; 
     }
     if(strcmp(current->key, key) == 0){
-        Node *tmp = current;
+        Hashmap_Node *tmp = current;
         if(current->next != NULL){
             tmp = current->next;
             map->hashmap[index] = tmp;
@@ -130,14 +140,14 @@ int remove_from_map(Map *map, char *key) {
         free(current);
         map->hashmap[index] = NULL;
     } else {
-        Node *tmp = map->hashmap[index];
+        Hashmap_Node *tmp = map->hashmap[index];
         while(strcmp(tmp->next->key, key) != 0){
             if(tmp->next == NULL) {
                 return 1;
             }
             tmp = tmp->next;
         }
-        Node *tmp2 = tmp;
+        Hashmap_Node *tmp2 = tmp;
         if(tmp2->next->next != NULL){
             tmp2 = tmp2->next->next;
             free(tmp->next->key);
@@ -154,9 +164,9 @@ int remove_from_map(Map *map, char *key) {
 
 void delete_and_free_map(Map *map){
     for(size_t i = 0; i < HASHMAP_SIZE; i++){
-        Node *node = map->hashmap[i];
+        Hashmap_Node *node = map->hashmap[i];
         while(node != NULL){
-            Node *tmp = node->next;
+            Hashmap_Node *tmp = node->next;
             free(node->key);
             free(node);
             node = NULL;
@@ -164,46 +174,4 @@ void delete_and_free_map(Map *map){
         }
     }
     free(map);
-}
-
-void handle_error(int error) {
-    if(error != 0){
-        fprintf(stderr, "error\n");
-        exit(1);
-    }
-}
-
-int main(){
-    Map *map = malloc(sizeof(Map));
-    init_map(map);
-    int error = put_in_map(map, "hello", "this");
-    error = put_in_map(map, "what", "thing");
-    error = put_in_map(map, "wh", "put");
-    error = put_in_map(map, "la", "whatever");
-    error = put_in_map(map, "w", "in");
-    error = put_in_map(map, "something else", "here");
-    error = put_in_map(map, "really long string goes here else", "aklsjdlk");
-    error = put_in_map(map, "something e", "random");
-    error = put_in_map(map, "somethielse", "here");
-    error = put_in_map(map, "sometelse", "hre");
-    error = put_in_map(map, "somelse", "he");
-    error = put_in_map(map, "soelse", "hee");
-    error = put_in_map(map, "soese", "whatever");
-    handle_error(error);
-
-    if(remove_from_map(map, "what") != 0){
-        assert(0);
-    }
-
-    //PRINT_MAP(map, "%s", (char*));
-
-    char *value = get_from_map(map, "soese");
-    if(value == NULL) {
-        assert(0);
-        // error: could not find in map
-    }
-    printf("%s\n", value);
-
-
-    delete_and_free_map(map);
 }

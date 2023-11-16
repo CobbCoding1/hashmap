@@ -1,1 +1,2 @@
-clang -lm main.c -o main -Wall -Wextra -ggdb
+set -xe
+clang hashmap.c -o hashmap -Wall -Wextra -ggdb
