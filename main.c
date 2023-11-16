@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
-#define HASHMAP_SIZE 10
+#define HASHMAP_SIZE 69 
+#define HASH_PRIME_NUMBER 2
 
 #define PRINT_MAP(printing_type, type) \
             for(size_t i = 0; i < HASHMAP_SIZE; i++){ \
@@ -28,13 +30,39 @@ typedef struct {
     char *key;
 } Map;
 
-size_t hash(char *key){
+
+size_t mul_hash(char *key){
     size_t hash = 0; 
+    float C = 1.618033988;
 
     for(size_t i = 0; i < strlen(key); i++){
-        hash += (((int)key[i] * 10) + 2) / 3;
+        hash += (int)key[i];
     }
 
+    return floor(HASHMAP_SIZE * fmod(hash * C, 1));
+}
+
+size_t mod_hash(char *key){
+    size_t hash = 0;
+    for(size_t i = 0; i < strlen(key); i++){
+        hash += (int)key[i];
+    }
+    return hash % HASHMAP_SIZE;
+}
+
+size_t knuth_hash(char *key) {
+    size_t hash = 0;
+    for(size_t i = 0; i < strlen(key); i++){
+        hash += (int)key[i];
+    }
+    return hash * (hash + 3) % HASHMAP_SIZE;
+}
+
+size_t hash(char *key) {
+    size_t hash = HASH_PRIME_NUMBER;
+    for(size_t i = 0; i < strlen(key); i++){
+        hash = hash * 31 + (int)key[i];
+    }
     return hash % HASHMAP_SIZE;
 }
 
@@ -43,6 +71,7 @@ void init_map(Map *map){
         map->hashmap[i] = NULL;
     }
 }
+
 
 int put_in_map(Map *map, char *key, void *value){
     size_t index = hash(key); 
@@ -146,16 +175,18 @@ int main(){
     Map *map = malloc(sizeof(Map));
     init_map(map);
     int error = put_in_map(map, "hello", "this");
-    handle_error(error);
     error = put_in_map(map, "what", "thing");
-    handle_error(error);
     error = put_in_map(map, "wh", "put");
-    handle_error(error);
     error = put_in_map(map, "la", "whatever");
-    handle_error(error);
-    error = put_in_map(map, "huh", "in");
-    handle_error(error);
-    error = put_in_map(map, "who", "here");
+    error = put_in_map(map, "w", "in");
+    error = put_in_map(map, "something else", "here");
+    error = put_in_map(map, "really long string goes here else", "aklsjdlk");
+    error = put_in_map(map, "something e", "random");
+    error = put_in_map(map, "somethielse", "here");
+    error = put_in_map(map, "sometelse", "hre");
+    error = put_in_map(map, "somelse", "he");
+    error = put_in_map(map, "soelse", "hee");
+    error = put_in_map(map, "soese", "hre");
     handle_error(error);
 
     PRINT_MAP("%s", (char*));

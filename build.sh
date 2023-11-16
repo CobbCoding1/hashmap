@@ -1,1 +1,1 @@
-clang main.c -o main -Wall -Wextra -ggdb
+clang -lm main.c -o main -Wall -Wextra -ggdb
