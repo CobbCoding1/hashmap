@@ -37,7 +37,7 @@ int put_in_map(Map *map, char *key, int value){
     Node *current = malloc(sizeof(Node));
     current->value = value;
     current->key = malloc(sizeof(char) * strlen(key));
-    current->key = key;
+    strcpy(current->key, key);
     current->next = NULL;
     if(tmp != NULL) {
         Node *tmp = map->hashmap[index];
@@ -85,6 +85,7 @@ int remove_from_map(Map *map, char *key) {
             map->hashmap[index] = tmp;
             return 0;
         }
+        free(current->key);
         free(current);
         map->hashmap[index] = NULL;
     } else {
@@ -98,13 +99,29 @@ int remove_from_map(Map *map, char *key) {
         Node *tmp2 = tmp;
         if(tmp2->next->next != NULL){
             tmp2 = tmp2->next->next;
+            free(tmp->next->key);
+            free(tmp->next);
             tmp->next = tmp2;
         } else {
+            free(tmp->next->key);
             free(tmp->next);
             tmp->next = NULL;
         }
     }
     return 0;
+}
+
+void delete_and_free_map(Map *map){
+    for(size_t i = 0; i < HASHMAP_SIZE; i++){
+        Node *node = map->hashmap[i];
+        while(node != NULL){
+            Node *tmp = node->next;
+            free(node->key);
+            free(node);
+            node = NULL;
+            node = tmp;
+        }
+    }
 }
 
 void handle_error(int error) {
@@ -121,10 +138,16 @@ int main(){
     handle_error(error);
     error = put_in_map(map, "what", 11);
     handle_error(error);
+    error = remove_from_map(map, "what");
+    handle_error(error);
     error = put_in_map(map, "up", 20);
     handle_error(error);
     int value;
-    error = get_from_map(map, "wht", &value);
+    error = get_from_map(map, "up", &value);
     handle_error(error);
+
+    delete_and_free_map(map);
+    free(map);
+
     printf("%d\n", value);
 }
