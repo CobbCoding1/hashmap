@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include <math.h>
 
 #define HASHMAP_SIZE 69 
 #define HASH_PRIME_NUMBER 2
 
-#define PRINT_MAP(printing_type, type) \
+#define PRINT_MAP(map, printing_type, type) \
             for(size_t i = 0; i < HASHMAP_SIZE; i++){ \
                 Node *node = map->hashmap[i]; \
                 if(node == NULL) { \
@@ -162,6 +163,7 @@ void delete_and_free_map(Map *map){
             node = tmp;
         }
     }
+    free(map);
 }
 
 void handle_error(int error) {
@@ -186,12 +188,22 @@ int main(){
     error = put_in_map(map, "sometelse", "hre");
     error = put_in_map(map, "somelse", "he");
     error = put_in_map(map, "soelse", "hee");
-    error = put_in_map(map, "soese", "hre");
+    error = put_in_map(map, "soese", "whatever");
     handle_error(error);
 
-    PRINT_MAP("%s", (char*));
+    if(remove_from_map(map, "what") != 0){
+        assert(0);
+    }
+
+    //PRINT_MAP(map, "%s", (char*));
+
+    char *value = get_from_map(map, "soese");
+    if(value == NULL) {
+        assert(0);
+        // error: could not find in map
+    }
+    printf("%s\n", value);
 
 
     delete_and_free_map(map);
-    free(map);
 }
