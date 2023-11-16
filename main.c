@@ -96,12 +96,13 @@ int remove_from_map(Map *map, char *key) {
             tmp = tmp->next;
         }
         Node *tmp2 = tmp;
-        if(tmp->next->next != NULL){
-            tmp2 = tmp->next->next;
+        if(tmp2->next->next != NULL){
+            tmp2 = tmp2->next->next;
+            tmp->next = tmp2;
+        } else {
+            free(tmp->next);
+            tmp->next = NULL;
         }
-        free(tmp->next);
-        tmp->next = NULL;
-        tmp->next = tmp2;
     }
     return 0;
 }
@@ -120,12 +121,10 @@ int main(){
     handle_error(error);
     error = put_in_map(map, "what", 11);
     handle_error(error);
-    error = remove_from_map(map, "what");
-    handle_error(error);
     error = put_in_map(map, "up", 20);
     handle_error(error);
     int value;
-    error = get_from_map(map, "what", &value);
+    error = get_from_map(map, "wht", &value);
     handle_error(error);
     printf("%d\n", value);
 }
