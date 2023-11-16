@@ -2,11 +2,24 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define HASHMAP_SIZE 1
+#define HASHMAP_SIZE 10
+
+#define PRINT_MAP(printing_type, type) \
+            for(size_t i = 0; i < HASHMAP_SIZE; i++){ \
+                Node *node = map->hashmap[i]; \
+                if(node == NULL) { \
+                    continue; \
+                } \
+                while(node != NULL){ \
+                    printf("%s: "printing_type" -> ", node->key, type node->value); \
+                    node = node->next;\
+                } \
+                printf("NULL\n"); \
+            } \
 
 typedef struct Node{
     char *key;
-    int value;
+    void *value;
     struct Node *next;
 } Node;
 
@@ -19,7 +32,7 @@ size_t hash(char *key){
     size_t hash = 0; 
 
     for(size_t i = 0; i < strlen(key); i++){
-        hash += ((int)key[i] * 10) / 3;
+        hash += (((int)key[i] * 10) + 2) / 3;
     }
 
     return hash % HASHMAP_SIZE;
@@ -31,7 +44,7 @@ void init_map(Map *map){
     }
 }
 
-int put_in_map(Map *map, char *key, int value){
+int put_in_map(Map *map, char *key, void *value){
     size_t index = hash(key); 
     Node *tmp = map->hashmap[index];
     Node *current = malloc(sizeof(Node));
@@ -51,24 +64,22 @@ int put_in_map(Map *map, char *key, int value){
     return 0;
 }
 
-int get_from_map(Map *map, char *key, int *value) {
+void *get_from_map(Map *map, char *key) {
     size_t index = hash(key);
     if(map->hashmap[index] == NULL) {
-        return 1;
+        return NULL;
     }
     if(strcmp(map->hashmap[index]->key, key) == 0){
-        *value = map->hashmap[index]->value;
-        return 0;
+        return map->hashmap[index]->value;
     } else {
         Node *current = map->hashmap[index];
         while(strcmp(current->key, key) != 0){
             if(current->next == NULL) {
-                return 1;
+                return NULL;
             }
             current = current->next;
         }
-        *value = current->value;
-        return 0;
+        return current->value;
     }
 }
 
@@ -134,20 +145,22 @@ void handle_error(int error) {
 int main(){
     Map *map = malloc(sizeof(Map));
     init_map(map);
-    int error = put_in_map(map, "hello", 15);
+    int error = put_in_map(map, "hello", "this");
     handle_error(error);
-    error = put_in_map(map, "what", 11);
+    error = put_in_map(map, "what", "thing");
     handle_error(error);
-    error = remove_from_map(map, "what");
+    error = put_in_map(map, "wh", "put");
     handle_error(error);
-    error = put_in_map(map, "up", 20);
+    error = put_in_map(map, "la", "whatever");
     handle_error(error);
-    int value;
-    error = get_from_map(map, "up", &value);
+    error = put_in_map(map, "huh", "in");
     handle_error(error);
+    error = put_in_map(map, "who", "here");
+    handle_error(error);
+
+    PRINT_MAP("%s", (char*));
+
 
     delete_and_free_map(map);
     free(map);
-
-    printf("%d\n", value);
 }
