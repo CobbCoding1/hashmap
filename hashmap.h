@@ -1,7 +1,8 @@
 #ifndef HASHMAP_IMPLEMENTATION
 #define HASHMAP_IMPLEMENTATION
-
+_Static_assert(0, "Error, missing HASHMAP_IMPLEMENTATION definition\n");
 #endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,23 +13,6 @@
 #ifndef HASH_PRIME_NUMBER
 #define HASH_PRIME_NUMBER 2
 #endif
-
-#define PRINT_MAP(map, printing_type, type) \
-            for(size_t i = 0; i < HASHMAP_SIZE; i++){ \
-                Hashmap_Node *node = map->hashmap[i]; \
-                if(node == NULL) { \
-                    continue; \
-                } \
-                while(node != NULL){ \
-                    printf("%s: "printing_type" -> ", node->key, type node->value); \
-                    node = node->next;\
-                } \
-                printf("NULL\n"); \
-            } \
-
-double hashmap_my_fmod(float num1, float num2){
-    return num1 - (int)(num1 / num2) * num2;
-}
 
 typedef struct Hashmap_Node{
     char *key;
@@ -41,6 +25,32 @@ typedef struct {
     char *key;
 } Map;
 
+double hashmap_my_fmod(float num1, float num2);
+static size_t hashmap_hash(char *key);
+void init_map(Map *map);
+int put_in_map(Map *map, char *key, void *value);
+void *get_from_map(Map *map, char *key);
+int remove_from_map(Map *map, char *key);
+void delete_and_free_map(Map *map);
+
+#define PRINT_MAP(map, printing_type, type) \
+            do { \
+                for(size_t i = 0; i < HASHMAP_SIZE; i++){ \
+                    Hashmap_Node *node = map->hashmap[i]; \
+                    if(node == NULL) { \
+                        continue; \
+                    } \
+                    while(node != NULL){ \
+                        printf("%s: "printing_type" -> ", node->key, type node->value); \
+                        node = node->next;\
+                    } \
+                    printf("NULL\n"); \
+                } \
+            } while(0)
+
+double hashmap_my_fmod(float num1, float num2){
+    return num1 - (int)(num1 / num2) * num2;
+}
 
 size_t hashmap_mul_hash(char *key){
     size_t hash = 0; 
@@ -69,7 +79,7 @@ size_t hashmap_knuth_hash(char *key) {
     return hash * (hash + 3) % HASHMAP_SIZE;
 }
 
-size_t hashmap_hash(char *key) {
+static size_t hashmap_hash(char *key) {
     size_t hash = HASH_PRIME_NUMBER;
     for(size_t i = 0; i < strlen(key); i++){
         hash = hash * 31 + (int)key[i];

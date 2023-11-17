@@ -3,7 +3,9 @@
 #define HASH_PRIME_NUMBER 2
 #include "hashmap.h"
 
-int main(){
+int main(void);
+
+int main(void){
     Map *map = malloc(sizeof(Map));
     init_map(map);
     put_in_map(map, "key", "first");
