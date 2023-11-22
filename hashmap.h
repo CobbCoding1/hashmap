@@ -99,7 +99,7 @@ int put_in_map(Map *map, char *key, void *value){
     Hashmap_Node *tmp = map->hashmap[index];
     Hashmap_Node *current = malloc(sizeof(Hashmap_Node));
     current->value = value;
-    current->key = malloc(sizeof(char) * strlen(key));
+    current->key = malloc(sizeof(char) * (strlen(key) + 1));
     strcpy(current->key, key);
     current->next = NULL;
     if(tmp != NULL) {
