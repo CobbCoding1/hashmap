@@ -17,6 +17,12 @@ int iota(void) {
 
 int main(void){
     Init_Cuazar();
+
+    __CUAZAR_RETURN__(iota(), 7, (int)hashmap_hash("test1"));
+    __CUAZAR_RETURN__(iota(), 8, (int)hashmap_hash("test2"));
+    __CUAZAR_RETURN__(iota(), 9, (int)hashmap_hash("test3"));
+    __CUAZAR_RETURN__(iota(), 49, (int)hashmap_hash("asdjkhakjzhcjkahsdbanmxdjkahekjquosuasoidu"));
+
     Map *map = malloc(sizeof(Map));
     init_map(map);
 
@@ -26,6 +32,15 @@ int main(void){
     __CUAZAR_RETURN__(iota(), 0, put_in_map(map, "test4", "test4"));
     __CUAZAR_RETURN__(iota(), 0, put_in_map(map, "test5", "test5"));
     __CUAZAR_RETURN__(iota(), 0, put_in_map(map, "test6", "test6"));
+    __CUAZAR_RETURN__(iota(), 0, put_in_map(map, "test7", "test6"));
+    __CUAZAR_RETURN__(iota(), 0, put_in_map(map, "test8", "test6"));
+    __CUAZAR_RETURN__(iota(), 0, put_in_map(map, "test9", "test6"));
+    __CUAZAR_RETURN__(iota(), 0, put_in_map(map, "test10", "test6"));
+    __CUAZAR_RETURN__(iota(), 0, put_in_map(map, "test11", "test6"));
+    __CUAZAR_RETURN__(iota(), 0, put_in_map(map, "test12", "test6"));
+    __CUAZAR_RETURN__(iota(), 0, put_in_map(map, "test19", "test6"));
+    __CUAZAR_RETURN__(iota(), 0, put_in_map(map, "test20", "test6"));
+    __CUAZAR_RETURN__(iota(), 0, put_in_map(map, "test106", "test6"));
 
 
     __CUAZAR_RETURN__(iota(), 0, remove_from_map(map, "test2"));
