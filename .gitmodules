@@ -1,0 +1,3 @@
+[submodule "Cuazar"]
+	path = Cuazar
+	url = https://github.com/SchoolyB/Cuazar.git

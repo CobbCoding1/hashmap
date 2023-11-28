@@ -151,11 +151,16 @@ int remove_from_map(Map *map, char *key) {
         map->hashmap[index] = NULL;
     } else {
         Hashmap_Node *tmp = map->hashmap[index];
-        while(strcmp(tmp->next->key, key) != 0){
+
+        if(tmp->next == NULL) {
+            return 1;
+        }
+
+        while((strcmp(tmp->next->key, key) != 0) && tmp->next != NULL){
+            tmp = tmp->next;
             if(tmp->next == NULL) {
                 return 1;
             }
-            tmp = tmp->next;
         }
         Hashmap_Node *tmp2 = tmp;
         if(tmp2->next->next != NULL){

@@ -12,12 +12,12 @@ init_map(&map); // initializes with NULL values
 
 ## Place in map
 ```C
-if(put_in_map("key", "value") != 0) {
+if(put_in_map(map, "key", "value") != 0) {
     // error: could not place in map
 }
 
 int value = 12;
-if(put_in_map("key", &value) != 0) {
+if(put_in_map(map, "key", &value) != 0) {
     // error: could not place in map
 }
 ```
