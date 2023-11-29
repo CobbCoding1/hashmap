@@ -93,24 +93,14 @@ void init_map(Map *map){
     }
 }
 
-
 int put_in_map(Map *map, char *key, void *value){
-    size_t index = hashmap_hash(key); 
-    Hashmap_Node *tmp = map->hashmap[index];
+    size_t index = hashmap_hash(key);
     Hashmap_Node *current = malloc(sizeof(Hashmap_Node));
     current->value = value;
     current->key = malloc(sizeof(char) * (strlen(key) + 1));
     strcpy(current->key, key);
-    current->next = NULL;
-    if(tmp != NULL) {
-        Hashmap_Node *tmp = map->hashmap[index];
-        while(tmp->next != NULL) {
-           tmp = tmp->next; 
-        }
-        tmp->next = current;
-    } else {
-        map->hashmap[index] = current;
-    }
+    current->next = map->hashmap[index];
+    map->hashmap[index] = current;
     return 0;
 }
 
