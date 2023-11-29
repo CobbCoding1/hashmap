@@ -116,21 +116,11 @@ int put_in_map(Map *map, char *key, void *value){
 
 void *get_from_map(Map *map, char *key) {
     size_t index = hashmap_hash(key);
-    if(map->hashmap[index] == NULL) {
-        return NULL;
+    Hashmap_Node *current = map->hashmap[index];
+    while (current != NULL && strcmp(current->key, key) != 0) {
+        current = current->next;
     }
-    if(strcmp(map->hashmap[index]->key, key) == 0){
-        return map->hashmap[index]->value;
-    } else {
-        Hashmap_Node *current = map->hashmap[index];
-        while(strcmp(current->key, key) != 0){
-            if(current->next == NULL) {
-                return NULL;
-            }
-            current = current->next;
-        }
-        return current->value;
-    }
+    return current == NULL ? NULL : current->value;
 }
 
 int remove_from_map(Map *map, char *key) {
