@@ -22,7 +22,6 @@ typedef struct Hashmap_Node{
 
 typedef struct {
     Hashmap_Node *hashmap[HASHMAP_SIZE];
-    char *key;
 } Map;
 
 double hashmap_my_fmod(float num1, float num2);
