@@ -164,11 +164,10 @@ void delete_and_free_map(Map *map){
     for(size_t i = 0; i < HASHMAP_SIZE; i++){
         Hashmap_Node *node = map->hashmap[i];
         while(node != NULL){
-            Hashmap_Node *tmp = node->next;
+            Hashmap_Node *next_node = node->next;
             free(node->key);
             free(node);
-            node = NULL;
-            node = tmp;
+            node = next_node;
         }
     }
     free(map);
