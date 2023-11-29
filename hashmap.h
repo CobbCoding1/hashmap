@@ -137,43 +137,26 @@ int remove_from_map(Map *map, char *key) {
     size_t index = hashmap_hash(key);
     Hashmap_Node *current = map->hashmap[index];
     if(current == NULL) {
-        return 1; 
+        return 1;
     }
-    if(strcmp(current->key, key) == 0){
-        Hashmap_Node *tmp = current;
-        if(current->next != NULL){
-            tmp = current->next;
-            map->hashmap[index] = tmp;
-            return 0;
-        }
-        free(current->key);
-        free(current);
-        map->hashmap[index] = NULL;
-    } else {
-        Hashmap_Node *tmp = map->hashmap[index];
 
-        if(tmp->next == NULL) {
+    Hashmap_Node *deletable;
+    if(strcmp(current->key, key) == 0) {
+        map->hashmap[index] = current->next; // my logic: if (current->next == NULL) { hashmap[index] will be null }
+        deletable = current;
+    } else {
+        while (current->next != NULL && strcmp(current->next->key, key) != 0) {
+            current = current->next;
+        }
+        if(current->next == NULL) {
             return 1;
         }
-
-        while((strcmp(tmp->next->key, key) != 0) && tmp->next != NULL){
-            tmp = tmp->next;
-            if(tmp->next == NULL) {
-                return 1;
-            }
-        }
-        Hashmap_Node *tmp2 = tmp;
-        if(tmp2->next->next != NULL){
-            tmp2 = tmp2->next->next;
-            free(tmp->next->key);
-            free(tmp->next);
-            tmp->next = tmp2;
-        } else {
-            free(tmp->next->key);
-            free(tmp->next);
-            tmp->next = NULL;
-        }
+        deletable = current->next;
+        current->next = deletable->next;
     }
+
+    free(deletable->key);
+    free(deletable);
     return 0;
 }
 
