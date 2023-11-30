@@ -47,7 +47,7 @@ void delete_and_free_map(Map *map);
                 } \
             } while(0)
 
-static void check_null(void *value) {
+inline static void check_null(void *value) {
     if(value == NULL) {
         fprintf(stderr, "OUT OF RAM");
         exit(1);
