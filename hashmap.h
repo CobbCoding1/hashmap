@@ -62,7 +62,7 @@ size_t hashmap_mul_hash(char *key){
     size_t hash = 0; 
     float C = 1.618033988;
 
-    for(size_t i = 0; key[1] != '\0'; i++){
+    for(size_t i = 0; key[i] != '\0'; i++){
         hash += (int)key[i];
     }
 
