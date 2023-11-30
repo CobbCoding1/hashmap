@@ -47,6 +47,13 @@ void delete_and_free_map(Map *map);
                 } \
             } while(0)
 
+static void check_null(void *value) {
+    if(value == NULL) {
+        fprintf(stderr, "OUT OF RAM");
+        exit(1);
+    }
+}
+
 double hashmap_my_fmod(float num1, float num2){
     return num1 - (int)(num1 / num2) * num2;
 }
@@ -95,8 +102,10 @@ void init_map(Map *map){
 int put_in_map(Map *map, char *key, void *value){
     size_t index = hashmap_hash(key);
     Hashmap_Node *current = malloc(sizeof(Hashmap_Node));
+    check_null(current);
     current->value = value;
     current->key = malloc(sizeof(char) * (strlen(key) + 1));
+    check_null(current->key);
     strcpy(current->key, key);
     current->next = map->hashmap[index];
     map->hashmap[index] = current;
