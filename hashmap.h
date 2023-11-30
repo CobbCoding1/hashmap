@@ -55,7 +55,7 @@ size_t hashmap_mul_hash(char *key){
     size_t hash = 0; 
     float C = 1.618033988;
 
-    for(size_t i = 0; i < strlen(key); i++){
+    for(size_t i = 0; key[1] != '\0'; i++){
         hash += (int)key[i];
     }
 
@@ -64,7 +64,7 @@ size_t hashmap_mul_hash(char *key){
 
 size_t hashmap_mod_hash(char *key){
     size_t hash = 0;
-    for(size_t i = 0; i < strlen(key); i++){
+    for(size_t i = 0; key[i] != '\0'; i++){
         hash += (int)key[i];
     }
     return hash % HASHMAP_SIZE;
@@ -72,7 +72,7 @@ size_t hashmap_mod_hash(char *key){
 
 size_t hashmap_knuth_hash(char *key) {
     size_t hash = 0;
-    for(size_t i = 0; i < strlen(key); i++){
+    for(size_t i = 0; key[i] != '\0'; i++){
         hash += (int)key[i];
     }
     return hash * (hash + 3) % HASHMAP_SIZE;
